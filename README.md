@@ -2,9 +2,33 @@
 
 一个开源的 AI 长篇小说写作桌面应用,基于 Electron + React 19 + TypeScript。
 
+## AI Agent 化设计
+
+**AI 不只是聊天框里的对话者,而是能直接动项目数据的 Agent。** InkArk 的核心架构是给 LLM 暴露 16 个结构化工具,让它在统一的规划下连续完成"查资料 → 改设定 → 写正文 → 调整大纲"这一整条链路,而不是拆成 N 轮"用户说一段、AI 写一段"的来回。
+
+工具集覆盖写作全流程:
+
+| 阶段 | 工具 | 用途 |
+|---|---|---|
+| 探索 | `list` / `read` / `search` | 让 AI 先了解现有项目结构、读章节内容、搜人物/设定/知识库 |
+| 规划 | `create_volume` / `write_volume` / `create_chapter` | 一轮一卷地建立卷级大纲,再按需创建空章节占位 |
+| 写作 | `write_chapter_content` / `write_chapter_outline` | 按段落 ID 增删改正文(强制分段落,避免整章覆盖) |
+| 设定 | `write_character_card` / `write_world_setting` / `write_chapter_title` | 增改人物、世界观、章节标题 |
+| 审核 | `propose_action` | 当 AI 不确定方案时(标题候选、剧情走向),先列选项让用户挑 |
+| 风险 | `delete` | 删实体(角色/章节/卷),强制要求 `reason` 字段 + 用户确认 |
+
+几个设计决策:
+
+- **Diff 审核门控**:所有 `write_*` 工具调用产生"待审核"结果(在 `pendingOutlineEdit` / `pendingChapterEdit` / `pendingVolumeEdit` 等 store 中),用户在 UI 看到改动预览后才落盘,AI 不会"擅自改稿"。
+- **强制序列化**:`write_volume` 限制一轮工具调用只能写一卷;`write_chapter_content` 禁止对非空章节直接传 `content` 覆盖(必须按 `edits` / `inserts` 按段修改),保护既有正文不被 AI 整章重写。
+- **删除必须有理由 + 确认**:`delete` 工具强制 `reason` 字段,且前端在执行前弹窗二次确认,避免 AI 误删。
+- **本地工具链**:`search` 走本地 FTS5 索引,`read` 直读 SQLite,工具执行不依赖任何外部服务,断网也能用。
+
+## 功能特性
+
 - 章节编辑器(TipTap 富文本 + 自动保存)
 - AI 写作助手:续写 / 扩写 / 缩写 / 润色,多候选结果
-- AI 工具调用:16 个工具,AI 可直接操作项目数据(创建/修改章节、角色、世界观)
+- 16 个 AI 工具,详见 [AI Agent 化设计](#ai-agent-化设计)
 - 思考模式:支持 reasoning / thinking 输出(DeepSeek 等)
 - 全书大纲:分剧情段规划结构
 - 角色卡 / 世界观卡:分类管理
