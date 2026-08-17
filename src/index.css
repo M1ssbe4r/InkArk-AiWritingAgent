@@ -1,0 +1,293 @@
+@import 'misans/lib/Normal/MiSans-Regular.min.css';
+@import 'misans/lib/Normal/MiSans-Medium.min.css';
+@import 'misans/lib/Normal/MiSans-Bold.min.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 240 5.9% 10%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 5.9% 10%;
+    --radius: 0.5rem;
+    --sidebar-background: 0 0% 97%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-accent: 240 4.8% 92%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    /* Version A — Claude Code style floating glass tokens */
+    --canvas-bg-from: 220 35% 78%;
+    --canvas-bg-via: 250 30% 84%;
+    --canvas-bg-to: 200 40% 76%;
+    --surface-floating: 0 0% 100%;
+    --glass-border: 0 0% 100%;
+    --glass-border-strong: 220 13% 91%;
+    --glass-shadow: 15 23 42;
+    --glass-blur: 24px;
+    --glass-blur-strong: 32px;
+    --glass-radius: 16px;
+    --paper-radius: 12px;
+    --floating-shadow: 0 12px 40px -16px rgba(15, 23, 42, 0.18),
+                        0 3px 10px -3px rgba(15, 23, 42, 0.08);
+    --floating-shadow-hover: 0 20px 56px -20px rgba(15, 23, 42, 0.24),
+                             0 6px 16px -6px rgba(15, 23, 42, 0.10);
+    --topbar-blur: 16px;
+    --ease-out-quint: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .dark {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 240 5.9% 10%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 240 4.9% 83.9%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html {
+    font-size: var(--font-ui-size, 14px);
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-ui, 'MiSans'), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+}
+
+@layer utilities {
+  /* Version A — Glass + floating module utilities */
+  .floating-glass {
+    background: hsl(var(--surface-floating) / 0.72);
+    backdrop-filter: blur(var(--glass-blur-strong)) saturate(180%);
+    -webkit-backdrop-filter: blur(var(--glass-blur-strong)) saturate(180%);
+    border: 1px solid hsl(var(--glass-border-strong) / 0.7);
+    box-shadow: var(--floating-shadow);
+    border-radius: var(--glass-radius);
+  }
+  .floating-glass-soft {
+    background: hsl(var(--surface-floating) / 0.6);
+    backdrop-filter: blur(var(--glass-blur)) saturate(160%);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(160%);
+    border: 1px solid hsl(var(--glass-border) / 0.4);
+    border-radius: var(--glass-radius);
+  }
+  .floating-glass-topbar {
+    background: hsl(var(--surface-floating) / 0.6);
+    backdrop-filter: blur(var(--topbar-blur)) saturate(160%);
+    -webkit-backdrop-filter: blur(var(--topbar-blur)) saturate(160%);
+  }
+  .canvas-bg {
+    background-image: linear-gradient(
+      135deg,
+      hsl(var(--canvas-bg-from)) 0%,
+      hsl(var(--canvas-bg-via)) 45%,
+      hsl(var(--canvas-bg-to)) 100%
+    );
+  }
+  .paper {
+    background: #ffffff;
+    border-radius: var(--paper-radius);
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 12px 32px -20px rgba(15, 23, 42, 0.12);
+  }
+  .hover-lift {
+    transition: transform 180ms var(--ease-out-quint), box-shadow 180ms var(--ease-out-quint);
+  }
+  .hover-lift:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--floating-shadow-hover);
+  }
+  .floating-shadow {
+    box-shadow: var(--floating-shadow);
+  }
+  .floating-shadow-hover {
+    box-shadow: var(--floating-shadow-hover);
+  }
+  .glass-pop-in {
+    animation: glass-pop-in 200ms var(--ease-out-quint) both;
+  }
+  .glass-pane-slide {
+    transition: width 280ms var(--ease-out-quint), opacity 200ms var(--ease-out-quint), transform 200ms var(--ease-out-quint);
+  }
+  body.resizing-cols .glass-pane-slide {
+    transition: none;
+  }
+  .resize-handle {
+    position: relative;
+    width: 3px;
+    cursor: col-resize;
+    z-index: 50;
+    flex-shrink: 0;
+  }
+}
+
+@keyframes glass-pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.ProseMirror {
+  @apply outline-none min-h-[500px] px-6 py-4 bg-transparent;
+  font-family: var(--font-editor, 'MiSans'), 'Courier New', 'NSimSun', monospace;
+  font-size: var(--font-editor-size, 15px);
+  font-weight: var(--font-editor-weight, 400);
+  line-height: 1.85;
+  tab-size: 4;
+}
+
+.ProseMirror p {
+  margin: 0 0 0.85em 0;
+}
+.ProseMirror p:last-child {
+  margin-bottom: 0;
+}
+
+
+
+.ProseMirror p.is-editor-empty:first-child::before {
+  @apply text-muted-foreground/50 pointer-events-none float-left h-0 content-[attr(data-placeholder)];
+}
+
+.ProseMirror .ProseMirror-cursor {
+  border-left: 2px solid !important;
+}
+
+.ProseMirror-focused .persistent-cursor {
+  display: none !important;
+}
+
+.persistent-cursor {
+  position: relative;
+  border-left: 2px solid #22c55e !important;
+  box-shadow: 0 0 6px rgba(34, 197, 94, 0.4);
+}
+
+.persistent-selection {
+  background-color: rgba(59, 130, 246, 0.15) !important;
+}
+
+.ProseMirror.inkark-chapter-editor {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.ProseMirror.inkark-chapter-editor .para-gutter-host {
+  position: relative;
+}
+
+.inkark-diff-view .para-gutter-host {
+  position: relative;
+}
+
+.inkark-diff-view .para-gutter-num,
+.ProseMirror.inkark-chapter-editor .para-gutter-num {
+  display: inline-block;
+  width: 1.25rem;
+  margin-left: -1.5rem;
+  margin-right: 0.25rem;
+  text-align: right;
+  vertical-align: baseline;
+  font-size: inherit;
+  font-variant-numeric: tabular-nums;
+  line-height: inherit;
+  color: hsl(var(--muted-foreground) / 0.45);
+  user-select: none;
+  pointer-events: none;
+}
+
+.mask-fade-right {
+  -webkit-mask-image: linear-gradient(to right, black 70%, transparent 100%);
+  mask-image: linear-gradient(to right, black 70%, transparent 100%);
+  padding-right: 8px;
+}
+
+/* Generating indicator: 2x2 squares that light up green in sequence */
+.gen-block {
+  width: 6px;
+  height: 6px;
+  border: 1px solid hsl(var(--border));
+  border-radius: 1px;
+  display: block;
+  background-color: transparent;
+  animation: gen-block-pulse 1.6s ease-in-out infinite;
+}
+.gen-block-1 { animation-delay: 0s; }
+.gen-block-2 { animation-delay: 0.4s; }
+.gen-block-3 { animation-delay: 0.8s; }
+.gen-block-4 { animation-delay: 1.2s; }
+
+@keyframes gen-block-pulse {
+  0% {
+    background-color: rgb(34 197 94);
+    border-color: rgb(34 197 94);
+  }
+  25%, 100% {
+    background-color: transparent;
+    border-color: hsl(var(--border));
+  }
+}
+
+/* Native scrollbar: thin, rounded, no arrows, no track */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  border-radius: 9999px;
+  background: hsl(var(--muted-foreground) / 0.2);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.4);
+}
+::-webkit-scrollbar-button {
+  display: none;
+}

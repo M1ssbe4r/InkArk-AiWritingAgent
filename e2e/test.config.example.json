@@ -1,0 +1,21 @@
+{
+  "api": {
+    "base_url": "https://api.openai.com/v1",
+    "api_key": "",
+    "model": "gpt-4o",
+    "provider": "openai"
+  },
+  "deepseek-api": {
+    "base_url": "https://api.deepseek.com",
+    "api_key": "",
+    "model": "deepseek-v4-flash",
+    "provider": "deepseek"
+  },
+  "preset": {
+    "temperature": 1,
+    "top_p": 1,
+    "max_tokens": 1024,
+    "thinking_enabled": false,
+    "reasoning_effort": "high"
+  }
+}

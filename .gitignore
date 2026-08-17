@@ -1,0 +1,53 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+dist-electron/
+release/
+out/
+output/
+
+# Electron
+*.log
+crashes.log
+
+# User data (portable mode keeps this at $INSTDIR/data/ in packaged builds)
+data/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+.trae/
+.claude/
+.opencode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test coverage / results
+coverage/
+test-results/
+playwright-report/
+e2e/.e2e-data/
+e2e/logs/
+e2e/test.config.json
+e2e/test-results/
+
+# Local worktrees and scratch
+.worktrees/
+截图/
+tmp/
+update-test/
+
+# Diagnostic bundles
+*.tar.gz
+!build/icon.ico
