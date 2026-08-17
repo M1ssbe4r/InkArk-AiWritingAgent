@@ -147,7 +147,7 @@ npm run build
 npm run e2e
 ```
 
-E2E 测试需要 `e2e/test.config.json` 配置 API key,模板见 `e2e/test.config.example.json`。不开源版本会自动跳过 AI 依赖的测试。
+E2E 测试需要 `e2e/test.config.json` 配置 API key,模板见 `e2e/test.config.example.json`。未配置 API key 时,依赖 AI 的测试会被自动跳过。
 
 ## 项目备份格式 `.inkark`
 
