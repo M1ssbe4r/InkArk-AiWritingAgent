@@ -12,7 +12,6 @@ import { ReleaseNotesDialog } from '@/components/layout/ReleaseNotesDialog'
 import { HelpDialog } from '@/components/layout/HelpDialog'
 import { ProjectCommits } from '@/components/layout/ProjectCommits'
 import { CommandPalette } from '@/components/ui/CommandPalette'
-import { UpdateToast } from '@/components/UpdateToast'
 import { Toaster } from 'sonner'
 import { useEditorStore } from '@/stores/editorStore'
 import { useAppStore } from '@/stores/appStore'
@@ -421,7 +420,6 @@ function App() {
         onNewChapter={handleNewChapter}
         onSave={handleSave}
       />
-      <UpdateToast />
       <Toaster position="bottom-right" richColors closeButton duration={5000} />
     </div>
   )

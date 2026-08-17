@@ -2,18 +2,17 @@
 
 ## Product Context
 
-**InkArk is a commercial product preparing for market launch, not a personal project.** This shapes every recommendation:
+InkArk is an open-source desktop writing app. Some principles that shape every recommendation:
 
-- **Data safety > convenience.** A user losing their writing is unrecoverable and damages the product. Prefer defensive defaults (atomic writes, backups, NSIS data preservation hooks) over clever shortcuts.
-- **API and schema stability > refactoring speed.** Renderer, preload, and IPC contracts are public surfaces once users are running this. Breaking changes need migration paths, not just "rename the field".
-- **No experimental dependencies in shipped code.** Pin versions, audit new deps, prefer mature libraries. A crash in production hits paying users.
-- **Compliance-adjacent items are not optional:** user agreement, privacy policy, telemetry opt-in, API key encryption at rest, error reporting. Surface these when missing rather than waiting to be asked.
+- **Data safety > convenience.** A user losing their writing is unrecoverable. Prefer defensive defaults (atomic writes, backups, NSIS data preservation hooks) over clever shortcuts.
 - **Portability is a first-class design goal** — user data lives at `$INSTDIR/data/` (and `$INSTDIR/fonts/`), intentionally not in `%APPDATA%`. NSIS update install preserves these via the `customInstall` hook in `build/installer.nsh`. If you add a new user-owned directory at the install root, mirror the recovery in that hook.
+- **No telemetry, no external services** — the app is fully local except for the LLM API calls the user configures themselves. No auth, no login, no server-side state.
+- **Renderer/preload/IPC are public API** — breaking changes need migration paths, not just "rename the field".
 
 ## Quick Reference
 
 ```bash
-npm install              # install deps (root only; server/ has its own)
+npm install              # install deps
 npm run dev              # Vite dev server (browser HMR, no Electron)
 npm run electron:dev     # build then launch Electron
 npm test                 # Vitest unit tests
@@ -26,13 +25,12 @@ npm run build            # tsc + vite build
 
 ## Architecture
 
-Two separate apps in one repo:
+A single Electron app:
 
 | Layer | Path | Stack |
 |---|---|---|
 | Desktop app (renderer) | `src/` | React 19 + TypeScript + Vite 6 + Tailwind 3.4 + shadcn/ui |
 | Electron main process | `electron/` | Node + Electron 33 + sql.js (WASM SQLite) |
-| API proxy server | `server/` | Express + better-sqlite3 + JWT (standalone, not built by root scripts) |
 
 ### Key Boundaries
 
@@ -84,20 +82,6 @@ All IPC uses `ipcMain.handle` / `ipcRenderer.invoke` (request-response). Channel
 
 Streaming API calls use a stream ID pattern: main process returns a stream ID, renderer subscribes via `api:stream:{id}` events, can abort via `api:abortStream`.
 
-## Server (server/)
-
-Independent Express app with its own `package.json`. Not built or started by root scripts.
-
-```bash
-cd server && npm install && npm run dev   # tsx watch mode
-```
-
-- Auth: bcryptjs + JWT
-- LLM proxy: forwards to configured `LLM_BASE_URLS` with key rotation
-- Deploy: Docker (`server/docker-compose.yml`), needs `.env` with `JWT_SECRET`, `LLM_BASE_URLS`, `LLM_API_KEYS`, `LLM_MODELS`
-- Rate limiting: per-user daily token + request limits
-- Routes: `chat.ts` (LLM proxy), auth middleware, rate-limit middleware
-
 ## Important Conventions
 
 - **UI components**: shadcn/ui pattern — Radix primitives + CVA + `cn()` utility in `src/lib/utils.ts`
@@ -107,3 +91,9 @@ cd server && npm install && npm run dev   # tsx watch mode
 - **Imports**: Use `@/` path alias, not relative `../` for cross-directory imports
 - **No comments in code** unless explicitly asked
 - **Fonts**: custom fonts go in `fonts/` dir at project root (dev) or next to executable (packaged)
+
+## AI / Embedding API Configuration
+
+- LLM chat calls (`api:streamChat`) use whatever the user has configured in `设置 → API 配置`. Default config (`is_default=1`) is selected automatically.
+- Knowledge base semantic search (`electron/ipc/vector.ts`) reuses the same default config: `base_url` + `api_key` + `model`. The `model` field is sent to the upstream `/v1/embeddings` endpoint, so users who want vector search should configure a default API whose model is an embedding model (e.g. `text-embedding-3-small` on OpenAI / `BAAI/bge-m3` on SiliconFlow / etc.). Providers that don't support `/v1/embeddings` (e.g. DeepSeek) will fail at the first index attempt — that is expected.
+- If no default config exists, `vector` IPC returns `未配置默认 API:请先在 设置 → API 配置 中添加并设为默认`.

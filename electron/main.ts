@@ -42,6 +42,7 @@ import { registerKnowledgeHandlers, setMainWindowForKnowledge } from './ipc/know
 import { registerSearchHandlers } from './ipc/search'
 import { rebuildAllFTSIndex, syncCharacterToFTS, syncWorldToFTS, syncChapterToFTS, syncOutlineToFTS, syncVolumeToFTS, syncKnowledgeToFTS, deleteEntityFromFTS, deleteProjectFromFTS, rebuildProjectFTSIndex } from './ipc/fts'
 import { registerVolumeHandlers, createDefaultVolume } from './ipc/volume'
+import { registerVectorHandlers } from './ipc/vector'
 import { initTokenizer, loadCustomDict, isJiebaAvailable } from './ipc/tokenizer'
 import { runProjectImport } from './ipc/projectImport'
 import { registerImportHandlers } from './ipc/importParser'
@@ -139,14 +140,14 @@ const VITE_DEV_SERVER_URL = process.env['VITE_DEV_SERVER_URL']
  *
  * 路径对应(关键):
  *   旧 {exeDir}/data/inkark.db          → 新 {userData}/inkark.db
- *   旧 {exeDir}/data/vector-store.json  → 新 {userData}/vector-store.json
+ *   旧 {exeDir}/data/vector-store.json  → 新 {userData}/vector-store.json  (知识库向量化索引)
  *   旧 {exeDir}/data/logs/              → 新 {userData}/logs/
  *   旧 {exeDir}/fonts/                  → 新 {userData}/fonts/
  * 注意:旧 portable 的 userData 本身就是 data/ 目录,所以迁移是把 data/ 的
  * *内容* 摊到 userData 根,不是再套一层 userData/data/。
  *
  * 触发:Mac 用户升级到当前版本后第一次启动,并且老目录还在。
- * 典型场景是 electron-updater 走 ditto 解压(保留 zip 里没有的文件);
+ * 典型场景是覆盖安装(走 ditto / drag-replace,保留 zip 里没有的文件);
  * 手动拖 .dmg 替换 InkArk.app 的用户老数据已经被吃了,这里救不了,
  * 让用户走废纸篓 / Time Machine。
  *
@@ -388,7 +389,6 @@ app.whenReady().then(async () => {
 
   registerIpcHandlers()
   createWindow()
-  setupAutoUpdater()
 })
 
 // 关窗握手状态:0 = 还没 flush;1 = renderer 已 flush 完毕;2 = 已进入 commit 阶段不再拦截。
@@ -485,6 +485,7 @@ function registerIpcHandlers() {
   registerKnowledgeHandlers()
   registerSearchHandlers()
   registerVolumeHandlers(db)
+  registerVectorHandlers()
   registerImportHandlers(mainWindow!)
 
   // 日志 IPC:send / tail / openDir / export 等

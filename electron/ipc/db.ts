@@ -265,8 +265,6 @@ export async function initDatabase() {
     }
   } catch {}
 
-  // (User session table removed for open-source release)
-
   // Drop old snapshot system
   try { db.run('DROP TABLE IF EXISTS snapshots') } catch {}
 

@@ -38,7 +38,7 @@ describe('logger demo', () => {
     l.info('db.chapter.save', 'chapter auto-saved', { chapterId: 'c1', projectId: 'p1', wordCount: 3421 })
 
     // AI 流式(50 token,验证不刷屏 → 只 3 条 stream 日志)
-    const ctx = l.streamStart('s1', { apiSource: 'inkark', model: 'deepseek-v4-flash' })
+    const ctx = l.streamStart('s1', { apiSource: 'custom', model: 'deepseek-v4-flash' })
     for (let i = 0; i < 50; i++) l.streamToken(ctx, 'x')
     l.streamEnd(ctx, { finishReason: 'stop' })
 

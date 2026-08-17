@@ -151,7 +151,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   },
 
   // Vector index
-  // API key 统一在服务端 .env 配置,客户端不暴露 getConfig/setConfig/testConnection
+  // 复用默认 API 配置(base_url + api_key + model),调上游 OpenAI 兼容 /v1/embeddings
   vector: {
     indexItem: (itemId: string) => ipcRenderer.invoke('db:vector:indexItem', itemId),
     onIndexProgress: (callback: (data: { itemId: string; current: number; total: number }) => void) => {
@@ -189,18 +189,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
       return () => { ipcRenderer.removeAllListeners(channel) }
     },
     abortStream: (streamId: string) => ipcRenderer.invoke('api:abortStream', streamId),
-  },
-
-  // Auto-update
-  update: {
-    check: () => ipcRenderer.invoke('update:check'),
-    download: () => ipcRenderer.invoke('update:download'),
-    quitAndInstall: () => ipcRenderer.invoke('update:quitAndInstall'),
-    onStatus: (callback: (status: { type: string; version?: string; percent?: number; transferred?: number; total?: number; bytesPerSecond?: number; message?: string }) => void) => {
-      const handler = (_event: any, data: any) => callback(data)
-      ipcRenderer.on('update:status', handler)
-      return () => { ipcRenderer.removeListener('update:status', handler) }
-    },
   },
 
   // Project import from txt / doc / docx

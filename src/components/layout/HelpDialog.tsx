@@ -13,7 +13,7 @@ const page1 = `## API 配置
 
 标题栏右上角 → 设置 → API 配置
 
-InkArk 提供官方免费 API，新用户可免费体验一个月，开箱即用。
+InkArk 不内置任何 API — 你需要自备 OpenAI 兼容服务(DeepSeek / OpenAI / 智源 / 硅基流动 / 自部署 Ollama 等),在「设置 → API 配置」里添加。知识库的语义搜索复用同一组配置(需要上游支持 /v1/embeddings 端点)。
 
 你也可以自备 API，目前支持 DeepSeek 和 OpenAI 兼容格式。可以在 AI 面板底部点击当前 API 名称切换配置。
 
